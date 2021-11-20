@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Prefabs Base
+  m_EditorClassIdentifier: 
+  m_GroupName: Prefabs Base
+  m_Data:
+    m_SerializedData: []
+  m_GUID: bcdcecb199e2911479409beb758d0528
+  m_SerializeEntries:
+  - m_GUID: ef6f02c9ef927f44986594ba958b5220
+    m_Address: Player
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - base
+  - m_GUID: d268ade3b2df7b94e914f25c25caa18d
+    m_Address: Enemy1
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - base
+    - enemies
+  - m_GUID: e70b53f1f89dcc14b9c2038479577f3b
+    m_Address: ProjectilePlayer
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - base
+  - m_GUID: 07e3666685bea214789524f2ea2e485b
+    m_Address: ProjectileEnemy
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - base
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: b04898702bcea33438c6d5c07d93a526, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 5dd49496433cf264a97bb912b28f5c30, type: 2}
+    - {fileID: 11400000, guid: 3c7496f3ce2a3444fb1c4dc030d331f1, type: 2}
