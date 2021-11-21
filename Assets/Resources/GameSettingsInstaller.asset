@@ -12,3 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: debbaed2103701a4198b9ef5a0f6cfc1, type: 3}
   m_Name: GameSettingsInstaller
   m_EditorClassIdentifier: 
+  Player:
+    StatePlaying:
+      BoundaryBuffer: 1
+      BoundaryAdjustForce: 500
+      MoveSpeed: 100
+    StateStarting:
+      StartOffset: {x: 0, y: 0, z: 0}
+      Amplitude: 2
+      Frequency: 2
