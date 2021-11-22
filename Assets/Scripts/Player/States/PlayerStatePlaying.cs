@@ -1,5 +1,4 @@
 using System;
-using ModestTree;
 using UnityEngine;
 using Zenject;
 
@@ -9,18 +8,21 @@ public class PlayerStatePlaying : PlayerState
     readonly Settings _settings;
     readonly Player _player;
     readonly ProjectilePlayer.Factory _bulletFactory;
+    readonly SignalBus _signalBus;
 
     float _lastFireTime;
+    int _currentLives;
 
     public PlayerStatePlaying(
         Player player, ProjectilePlayer.Factory bulletFactory,
-        Settings settings,
+        Settings settings, SignalBus signalBus,
         LevelBounds levelBoundary)
     {
         _levelBoundary = levelBoundary;
         _settings = settings;
         _player = player;
         _bulletFactory = bulletFactory;
+        _signalBus = signalBus;
     }
 
     public override void FixedUpdate()
@@ -74,10 +76,24 @@ public class PlayerStatePlaying : PlayerState
         }
     }
 
+    public override void PlayerHit()
+    {
+        _currentLives--;
+        _signalBus.Fire(new PlayerLivesSignal() { currentLives = _currentLives });
+
+        if (_currentLives == 0)
+        {
+            _player.ChangeState(PlayerStates.Dead);
+        }
+    }
+
     public override void OnCollisionEnter(Collision collision)
     {
-        //Assert.That(collision.gameObject.GetComponent<Enemy>() != null);
-        //_player.ChangeState(PlayerStates.Dead);
+        var enemy = collision.gameObject.GetComponent<Enemy>();
+        if(enemy != null)
+        {
+            PlayerHit();
+        }        
     }
 
     public override void Update()
@@ -88,10 +104,18 @@ public class PlayerStatePlaying : PlayerState
             _lastFireTime = Time.realtimeSinceStartup;
             Fire();
         }
+
+        // Cheat
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            PlayerHit();
+        }
     }
 
     public override void Start()
     {
+        _currentLives = _settings.Lives;
+        _signalBus.Fire(new PlayerLivesSignal() { currentLives = _currentLives });
     }
 
     public override void Dispose()
@@ -101,9 +125,10 @@ public class PlayerStatePlaying : PlayerState
     [Serializable]
     public class Settings
     {
+        public int Lives;
+        public float MoveSpeed;
         public float BoundaryBuffer;
         public float BoundaryAdjustForce;
-        public float MoveSpeed;
         public float BulletLifetime;
         public float BulletSpeed;
         public float MaxShootInterval;

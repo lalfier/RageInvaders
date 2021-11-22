@@ -5,13 +5,13 @@ public class ProjectileEnemy : Projectile
 {
     public override void OnTriggerEnter(Collider other)
     {
-        //var player = other.GetComponent<PlayerFacade>();
+        var player = other.GetComponent<Player>();
 
-        //if (player != null && _type == BulletTypes.FromEnemy)
-        //{
-        //    player.TakeDamage(MoveDirection);
-        //    _pool.Despawn(this);
-        //}
+        if (player != null && _type == ProjectileTypes.FromEnemy)
+        {
+            player.PlayerHit();
+            _pool.Despawn(this);
+        }
     }
 
     public class Factory : PlaceholderFactory<float, float, ProjectileTypes, ProjectileEnemy>

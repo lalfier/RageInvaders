@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player:
     StatePlaying:
+      Lives: 3
+      MoveSpeed: 100
       BoundaryBuffer: 1
       BoundaryAdjustForce: 500
-      MoveSpeed: 100
       BulletLifetime: 1
       BulletSpeed: 50
       MaxShootInterval: 0.5

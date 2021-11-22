@@ -23,7 +23,7 @@ public class PlayerStateWaiting : PlayerState
     public override void Start()
     {
         float zPos = _levelBoundary.Bottom + 1;
-        _player.Position = new Vector3(_player.Position.x, 0, -zPos);
+        _player.Position = new Vector3(0, 0, -zPos);
         _player.Position += _settings.StartOffset;
         startingPos = _player.Position;
     }

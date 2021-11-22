@@ -49,6 +49,10 @@ public class GameInstaller : MonoInstaller
     {
         SignalBusInstaller.Install(Container);
         Container.DeclareSignal<PlayerDeadSignal>();
+        Container.DeclareSignal<PlayerLivesSignal>();
+        Container.DeclareSignal<StartButtonSignal>();
+        Container.DeclareSignal<MenuButtonSignal>();
+        Container.DeclareSignal<ScoresButtonSignal>();
     }
 
     class ProjectileEnemyPool : MonoPoolableMemoryPool<float, float, ProjectileTypes, IMemoryPool, ProjectileEnemy>

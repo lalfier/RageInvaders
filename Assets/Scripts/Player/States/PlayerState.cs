@@ -21,4 +21,9 @@ public abstract class PlayerState : IDisposable
     {
         // optionally overridden
     }
+
+    public virtual void PlayerHit()
+    {
+        // optionally overridden
+    }
 }

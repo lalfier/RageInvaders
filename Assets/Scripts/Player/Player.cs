@@ -64,6 +64,11 @@ public class Player : MonoBehaviour
         _state.OnCollisionEnter(collision);
     }
 
+    public void PlayerHit()
+    {
+        _state.PlayerHit();
+    }
+
     public void ChangeState(PlayerStates state)
     {
         if (_state != null)

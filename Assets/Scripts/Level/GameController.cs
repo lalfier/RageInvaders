@@ -15,22 +15,19 @@ public class GameController : IInitializable, ITickable, IDisposable
     readonly SignalBus _signalBus;
     readonly EnemyManager _enemyManager;
     readonly Player _player;
+    readonly UiManager _uiManager;
 
     GameStates _state = GameStates.MainMenu;
-    float _elapsedTime;
+    UiScreen _currentUiScrren;
 
     public GameController(
         Player player, EnemyManager enemyManager,
-        SignalBus signalBus)
+        SignalBus signalBus, UiManager uiManager)
     {
         _signalBus = signalBus;
         _enemyManager = enemyManager;
         _player = player;
-    }
-
-    public float ElapsedTime
-    {
-        get { return _elapsedTime; }
+        _uiManager = uiManager;
     }
 
     public GameStates State
@@ -42,11 +39,19 @@ public class GameController : IInitializable, ITickable, IDisposable
     {
         Physics.gravity = Vector3.zero;
         _signalBus.Subscribe<PlayerDeadSignal>(OnPlayerDied);
+        _signalBus.Subscribe<PlayerLivesSignal>(OnPlayerHit);
+        _signalBus.Subscribe<StartButtonSignal>(StartGame);
+        _signalBus.Subscribe<MenuButtonSignal>(SetMainMenu);
+        _signalBus.Subscribe<ScoresButtonSignal>(ShowHighScores);
     }
 
     public void Dispose()
     {
         _signalBus.Unsubscribe<PlayerDeadSignal>(OnPlayerDied);
+        _signalBus.Unsubscribe<PlayerLivesSignal>(OnPlayerHit);
+        _signalBus.Unsubscribe<StartButtonSignal>(StartGame);
+        _signalBus.Unsubscribe<MenuButtonSignal>(SetMainMenu);
+        _signalBus.Unsubscribe<ScoresButtonSignal>(ShowHighScores);
     }
 
     public void Tick()
@@ -76,10 +81,21 @@ public class GameController : IInitializable, ITickable, IDisposable
         }
     }
 
-    void UpdateGameOver()
+    void SetMainMenu()
     {
-        Assert.That(_state == GameStates.GameOverMenu);
-        // Game Over Menu
+        if(_state != GameStates.MainMenu)
+        {
+            _enemyManager.Stop();
+            _player.ChangeState(PlayerStates.Waiting);
+            _state = GameStates.MainMenu;
+        }
+        _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.MainMenuUi);
+    }
+
+    void UpdateStarting()
+    {
+        Assert.That(_state == GameStates.MainMenu);
+        // Main Menu
     }
 
     void OnPlayerDied()
@@ -87,31 +103,41 @@ public class GameController : IInitializable, ITickable, IDisposable
         Assert.That(_state == GameStates.Playing);
         _state = GameStates.GameOverMenu;
         _enemyManager.Stop();
+        _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.GameOverUi);
+    }
+
+    void OnPlayerHit(PlayerLivesSignal livesInfo)
+    {
+        Assert.That(_state == GameStates.Playing);
+        _currentUiScrren.UpdatePlayingUiLives(livesInfo.currentLives);
+    }
+
+    void UpdateGameOver()
+    {
+        Assert.That(_state == GameStates.GameOverMenu);
+        // Game Over Menu
+    }
+
+    void StartGame()
+    {
+        Assert.That(_state == GameStates.MainMenu);
+        
+        _enemyManager.Start();
+        _state = GameStates.Playing;
+        _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.PlayingUi);
+        _player.ChangeState(PlayerStates.Playing);
+        _currentUiScrren.UpdatePlayingUiWaves(1);
+        _currentUiScrren.UpdatePlayingUiScore(0);
     }
 
     void UpdatePlaying()
     {
         Assert.That(_state == GameStates.Playing);
-        _elapsedTime += Time.deltaTime;
     }
 
-    void UpdateStarting()
+    void ShowHighScores()
     {
         Assert.That(_state == GameStates.MainMenu);
-        // Main Menu
-        if (Input.GetButtonDown("Fire1"))
-        {
-            StartGame();
-        }
-    }
-
-    void StartGame()
-    {
-        Assert.That(_state == GameStates.MainMenu || _state == GameStates.GameOverMenu);
-        
-        _elapsedTime = 0;
-        _enemyManager.Start();
-        _player.ChangeState(PlayerStates.Playing);
-        _state = GameStates.Playing;
+        _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.ScoresUi);
     }
 }
