@@ -17,7 +17,7 @@ public abstract class PlayerState : IDisposable
         // optionally overridden
     }
 
-    public virtual void OnTriggerEnter(Collider other)
+    public virtual void OnCollisionEnter(Collision collision)
     {
         // optionally overridden
     }

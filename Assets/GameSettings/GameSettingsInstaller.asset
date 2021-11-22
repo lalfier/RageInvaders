@@ -17,6 +17,10 @@ MonoBehaviour:
       BoundaryBuffer: 1
       BoundaryAdjustForce: 500
       MoveSpeed: 100
+      BulletLifetime: 1
+      BulletSpeed: 50
+      MaxShootInterval: 0.5
+      BulletOffsetDistance: 1
     StateStarting:
       StartOffset: {x: 0, y: 0, z: 0}
       Amplitude: 2

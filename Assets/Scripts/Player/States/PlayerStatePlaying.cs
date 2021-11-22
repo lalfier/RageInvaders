@@ -8,15 +8,19 @@ public class PlayerStatePlaying : PlayerState
     readonly LevelBounds _levelBoundary;
     readonly Settings _settings;
     readonly Player _player;
+    readonly ProjectilePlayer.Factory _bulletFactory;
+
+    float _lastFireTime;
 
     public PlayerStatePlaying(
-        Player player,
+        Player player, ProjectilePlayer.Factory bulletFactory,
         Settings settings,
         LevelBounds levelBoundary)
     {
         _levelBoundary = levelBoundary;
         _settings = settings;
         _player = player;
+        _bulletFactory = bulletFactory;
     }
 
     public override void FixedUpdate()
@@ -45,6 +49,14 @@ public class PlayerStatePlaying : PlayerState
         KeepPlayerOnScreen();
     }
 
+    void Fire()
+    {
+        var bullet = _bulletFactory.Create(
+            _settings.BulletSpeed, _settings.BulletLifetime, ProjectileTypes.FromPlayer);
+
+        bullet.transform.position = _player.Position + _player.LookDir * _settings.BulletOffsetDistance;
+    }
+
     void KeepPlayerOnScreen()
     {
         var extentLeft = (_levelBoundary.Left + _settings.BoundaryBuffer) - _player.Position.x;
@@ -62,14 +74,20 @@ public class PlayerStatePlaying : PlayerState
         }
     }
 
-    public override void OnTriggerEnter(Collider other)
+    public override void OnCollisionEnter(Collision collision)
     {
-        Assert.That(other.GetComponent<Projectile>() != null);
-        _player.ChangeState(PlayerStates.Dead);
+        //Assert.That(collision.gameObject.GetComponent<Enemy>() != null);
+        //_player.ChangeState(PlayerStates.Dead);
     }
 
     public override void Update()
     {
+        bool isFiring = Input.GetButton("Fire1");
+        if (isFiring && Time.realtimeSinceStartup - _lastFireTime > _settings.MaxShootInterval)
+        {
+            _lastFireTime = Time.realtimeSinceStartup;
+            Fire();
+        }
     }
 
     public override void Start()
@@ -86,6 +104,10 @@ public class PlayerStatePlaying : PlayerState
         public float BoundaryBuffer;
         public float BoundaryAdjustForce;
         public float MoveSpeed;
+        public float BulletLifetime;
+        public float BulletSpeed;
+        public float MaxShootInterval;
+        public float BulletOffsetDistance;
     }
 
     public class Factory : PlaceholderFactory<PlayerStatePlaying>

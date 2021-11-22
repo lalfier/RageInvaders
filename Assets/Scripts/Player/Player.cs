@@ -39,6 +39,11 @@ public class Player : MonoBehaviour
         set { transform.rotation = value; }
     }
 
+    public Vector3 LookDir
+    {
+        get { return -transform.forward; }
+    }
+
     public void Start()
     {
         ChangeState(PlayerStates.Waiting);
@@ -54,9 +59,9 @@ public class Player : MonoBehaviour
         _state.FixedUpdate();
     }
 
-    public void OnTriggerEnter(Collider other)
+    public void OnCollisionEnter(Collision collision)
     {
-        _state.OnTriggerEnter(other);
+        _state.OnCollisionEnter(collision);
     }
 
     public void ChangeState(PlayerStates state)
