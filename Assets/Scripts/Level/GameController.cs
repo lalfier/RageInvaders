@@ -19,6 +19,8 @@ public class GameController : IInitializable, ITickable, IDisposable
 
     GameStates _state = GameStates.MainMenu;
     UiScreen _currentUiScrren;
+    int _currentWave;
+    int _currentScore;
 
     public GameController(
         Player player, EnemyManager enemyManager,
@@ -40,6 +42,8 @@ public class GameController : IInitializable, ITickable, IDisposable
         Physics.gravity = Vector3.zero;
         _signalBus.Subscribe<PlayerDeadSignal>(OnPlayerDied);
         _signalBus.Subscribe<PlayerLivesSignal>(OnPlayerHit);
+        _signalBus.Subscribe<EnemyDeadSignal>(OnEnemyKilled);
+        _signalBus.Subscribe<WaveCreatedSignal>(OnWaveCreated);
         _signalBus.Subscribe<StartButtonSignal>(StartGame);
         _signalBus.Subscribe<MenuButtonSignal>(SetMainMenu);
         _signalBus.Subscribe<ScoresButtonSignal>(ShowHighScores);
@@ -49,6 +53,8 @@ public class GameController : IInitializable, ITickable, IDisposable
     {
         _signalBus.Unsubscribe<PlayerDeadSignal>(OnPlayerDied);
         _signalBus.Unsubscribe<PlayerLivesSignal>(OnPlayerHit);
+        _signalBus.Unsubscribe<EnemyDeadSignal>(OnEnemyKilled);
+        _signalBus.Unsubscribe<WaveCreatedSignal>(OnWaveCreated);
         _signalBus.Unsubscribe<StartButtonSignal>(StartGame);
         _signalBus.Unsubscribe<MenuButtonSignal>(SetMainMenu);
         _signalBus.Unsubscribe<ScoresButtonSignal>(ShowHighScores);
@@ -112,6 +118,20 @@ public class GameController : IInitializable, ITickable, IDisposable
         _currentUiScrren.UpdatePlayingUiLives(livesInfo.currentLives);
     }
 
+    void OnEnemyKilled(EnemyDeadSignal scoreInfo)
+    {
+        Assert.That(_state == GameStates.Playing);
+        _currentScore += scoreInfo.typeScore;
+        _currentUiScrren.UpdatePlayingUiScore(_currentScore);
+    }
+
+    void OnWaveCreated()
+    {
+        Assert.That(_state == GameStates.Playing);
+        _currentWave++;
+        _currentUiScrren.UpdatePlayingUiWaves(_currentWave);
+    }
+
     void UpdateGameOver()
     {
         Assert.That(_state == GameStates.GameOverMenu);
@@ -121,13 +141,14 @@ public class GameController : IInitializable, ITickable, IDisposable
     void StartGame()
     {
         Assert.That(_state == GameStates.MainMenu);
-        
-        _enemyManager.Start();
+
+        _currentWave = 0;
+        _currentScore = 0;
         _state = GameStates.Playing;
         _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.PlayingUi);
         _player.ChangeState(PlayerStates.Playing);
-        _currentUiScrren.UpdatePlayingUiWaves(1);
-        _currentUiScrren.UpdatePlayingUiScore(0);
+        _enemyManager.Start();
+        _currentUiScrren.UpdatePlayingUiScore(_currentScore);
     }
 
     void UpdatePlaying()

@@ -7,6 +7,7 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
 {
     public PlayerSettings Player;
     public EnemySettings Enemy;
+    public EnemyManagerSettings EnemyManager;
 
     [Serializable]
     public class PlayerSettings
@@ -21,6 +22,12 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
         public Enemy.Settings StatePlaying;
     }
 
+    [Serializable]
+    public class EnemyManagerSettings
+    {
+        public EnemyManager.Settings StatePlaying;
+    }
+
     public override void InstallBindings()
     {
         Container.Bind<AssetRefs>().FromInstance(FindObjectOfType<AssetManager>().assetRefs).AsSingle();
@@ -28,5 +35,6 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
         Container.BindInstance(Player.StatePlaying);
         Container.BindInstance(Player.StateStarting);
         Container.BindInstance(Enemy.StatePlaying);
+        Container.BindInstance(EnemyManager.StatePlaying);
     }
 }

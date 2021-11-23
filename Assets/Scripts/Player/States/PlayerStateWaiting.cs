@@ -24,14 +24,14 @@ public class PlayerStateWaiting : PlayerState
     {
         float zPos = _levelBoundary.Bottom + 1;
         _player.Position = new Vector3(0, 0, -zPos);
-        _player.Position += _settings.StartOffset;
+        _player.Position += _settings.startOffset;
         startingPos = _player.Position;
     }
 
     public override void Update()
     {
-        _player.Position = startingPos + Vector3.right * _settings.Amplitude * Mathf.Sin(_theta);
-        _theta += Time.deltaTime * _settings.Frequency;
+        _player.Position = startingPos + Vector3.right * _settings.amplitude * Mathf.Sin(_theta);
+        _theta += Time.deltaTime * _settings.frequency;
     }
 
     public override void FixedUpdate()
@@ -41,9 +41,9 @@ public class PlayerStateWaiting : PlayerState
     [Serializable]
     public class Settings
     {
-        public Vector3 StartOffset;
-        public float Amplitude;
-        public float Frequency;
+        public Vector3 startOffset;
+        public float amplitude;
+        public float frequency;
     }
 
     public class Factory : PlaceholderFactory<PlayerStateWaiting>

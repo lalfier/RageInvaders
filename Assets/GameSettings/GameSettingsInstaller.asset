@@ -14,21 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player:
     StatePlaying:
-      Lives: 3
-      MoveSpeed: 100
-      BoundaryBuffer: 1
-      BoundaryAdjustForce: 500
-      BulletLifetime: 1
-      BulletSpeed: 50
-      MaxShootInterval: 0.5
-      BulletOffsetDistance: 1
+      lives: 3
+      moveSpeed: 100
+      boundaryBuffer: 1
+      boundaryAdjustForce: 500
+      bulletLifetime: 1
+      bulletSpeed: 50
+      maxShootInterval: 0.5
+      bulletOffsetDistance: 1
     StateStarting:
-      StartOffset: {x: 0, y: 0, z: 0}
-      Amplitude: 2
-      Frequency: 2
+      startOffset: {x: 0, y: 0, z: 0}
+      amplitude: 2
+      frequency: 2
   Enemy:
     StatePlaying:
-      Lives: 1
-      BulletLifetime: 1
-      BulletSpeed: 50
-      BulletOffsetDistance: 0.5
+      lives: 1
+      bulletLifetime: 1
+      bulletSpeed: 50
+      bulletOffsetDistance: 0.5
+      scoreOnKill: 100
+  EnemyManager:
+    StatePlaying:
+      enemyColumns: 5
+      enemyRows: 3
+      xOffset: 2.5
+      yOffset: 2
+      topOffset: 4

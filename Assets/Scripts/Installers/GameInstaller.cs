@@ -17,23 +17,13 @@ public class GameInstaller : MonoInstaller
     void InstallEnemies()
     {
         Container.BindInterfacesAndSelfTo<EnemyManager>().AsSingle();
+        Container.Bind<EnemyRegistry>().AsSingle();
 
-        if(_assetRefs.enemiesRef.Count > 1)
-        {
-            Container.BindFactory<Enemy, Enemy.Factory>()
-                .FromPoolableMemoryPool<Enemy, EnemyPool>(poolBinder => poolBinder
-                    .WithInitialSize(20)
-                    .FromSubContainerResolve()
-                    .ByMethod(CreateEnemy));
-        }
-        else
-        {
-            Container.BindFactory<Enemy, Enemy.Factory>()
-                .FromPoolableMemoryPool<Enemy, EnemyPool>(poolBinder => poolBinder
-                    .WithInitialSize(20)
-                    .FromComponentInNewPrefab(_assetRefs.enemiesRef[0])
-                    .UnderTransformGroup("Enemies"));
-        }
+        Container.BindFactory<Enemy, Enemy.Factory>()
+            .FromPoolableMemoryPool<Enemy, EnemyPool>(poolBinder => poolBinder
+                .WithInitialSize(20)
+                .FromSubContainerResolve()
+                .ByMethod(CreateEnemy));
 
         Container.BindFactory<float, float, ProjectileTypes, ProjectileEnemy, ProjectileEnemy.Factory>()
             .FromPoolableMemoryPool<float, float, ProjectileTypes, ProjectileEnemy, ProjectileEnemyPool>(poolBinder => poolBinder
@@ -68,6 +58,7 @@ public class GameInstaller : MonoInstaller
         Container.DeclareSignal<PlayerDeadSignal>();
         Container.DeclareSignal<PlayerLivesSignal>();
         Container.DeclareSignal<EnemyDeadSignal>();
+        Container.DeclareSignal<WaveCreatedSignal>();
         Container.DeclareSignal<StartButtonSignal>();
         Container.DeclareSignal<MenuButtonSignal>();
         Container.DeclareSignal<ScoresButtonSignal>();

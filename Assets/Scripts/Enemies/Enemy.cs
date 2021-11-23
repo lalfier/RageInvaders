@@ -2,12 +2,23 @@ using System;
 using UnityEngine;
 using Zenject;
 
+public enum EnemyTypes
+{
+    Type1,
+    Type2,
+    Type3
+}
+
 public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
 {
+    [SerializeField]
+    EnemyTypes _type;
+
     Settings _settings;
     ProjectileEnemy.Factory _projectileFactory;
     SignalBus _signalBus;
     IMemoryPool _pool;
+    EnemyRegistry _registry;
 
     int _currentLives;
 
@@ -15,12 +26,13 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
     public void Construct(
         ProjectileEnemy.Factory projectileFactory,
         Settings settings, SignalBus signalBus,
-        IMemoryPool pool)
+        IMemoryPool pool, EnemyRegistry registry)
     {
         _settings = settings;
         _projectileFactory = projectileFactory;
         _signalBus = signalBus;
         _pool = pool;
+        _registry = registry;
     }
 
     public Vector3 Position
@@ -43,9 +55,9 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
     public void Fire()
     {
         var projectile = _projectileFactory.Create(
-            _settings.BulletSpeed, _settings.BulletLifetime, ProjectileTypes.FromEnemy);
+            _settings.bulletSpeed, _settings.bulletLifetime, ProjectileTypes.FromEnemy);
 
-        projectile.transform.position = Position + LookDir * _settings.BulletOffsetDistance;
+        projectile.transform.position = Position + LookDir * _settings.bulletOffsetDistance;
     }
 
     public void EnemyHit()
@@ -54,8 +66,9 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
 
         if (_currentLives == 0)
         {
-            _signalBus.Fire<EnemyDeadSignal>();
-            _pool.Despawn(this);
+            int score = (int)_type * _settings.scoreOnKill + _settings.scoreOnKill;
+            _signalBus.Fire(new EnemyDeadSignal() { typeScore = score });
+            Despawn();
         }
     }
 
@@ -68,24 +81,32 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
         }
     }
 
+    public void Despawn()
+    {
+        _pool.Despawn(this);
+    }
+
     public void OnDespawned()
-    {        
+    {
+        _registry.RemoveEnemy(this);
         _pool = null;
     }
 
     public void OnSpawned(IMemoryPool pool)
     {
         _pool = pool;
-        _currentLives = _settings.Lives;
+        _currentLives = _settings.lives;
+        _registry.AddEnemy(this);
     }
 
     [Serializable]
     public class Settings
     {
-        public int Lives;
-        public float BulletLifetime;
-        public float BulletSpeed;
-        public float BulletOffsetDistance;
+        public int lives;
+        public float bulletLifetime;
+        public float bulletSpeed;
+        public float bulletOffsetDistance;
+        public int scoreOnKill;
     }
 
     public class Factory : PlaceholderFactory<Enemy>

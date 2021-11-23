@@ -37,12 +37,12 @@ public class PlayerStatePlaying : PlayerState
 
         if (isMovigLeft)
         {
-            _player.Rigidbody.AddForce(Vector3.left * -_settings.MoveSpeed);
+            _player.Rigidbody.AddForce(Vector3.left * -_settings.moveSpeed);
         }
 
         if (isMovigRight)
         {
-            _player.Rigidbody.AddForce(Vector3.right * -_settings.MoveSpeed);
+            _player.Rigidbody.AddForce(Vector3.right * -_settings.moveSpeed);
         }
 
         // Always ensure we are on the main plane
@@ -54,25 +54,25 @@ public class PlayerStatePlaying : PlayerState
     void Fire()
     {
         var projectile = _projectileFactory.Create(
-            _settings.BulletSpeed, _settings.BulletLifetime, ProjectileTypes.FromPlayer);
+            _settings.bulletSpeed, _settings.bulletLifetime, ProjectileTypes.FromPlayer);
 
-        projectile.transform.position = _player.Position + _player.LookDir * _settings.BulletOffsetDistance;
+        projectile.transform.position = _player.Position + _player.LookDir * _settings.bulletOffsetDistance;
     }
 
     void KeepPlayerOnScreen()
     {
-        var extentLeft = (_levelBoundary.Left + _settings.BoundaryBuffer) - _player.Position.x;
-        var extentRight = _player.Position.x - (_levelBoundary.Right - _settings.BoundaryBuffer);
+        var extentLeft = (_levelBoundary.Left + _settings.boundaryBuffer) - _player.Position.x;
+        var extentRight = _player.Position.x - (_levelBoundary.Right - _settings.boundaryBuffer);
 
         if (extentLeft > 0)
         {
             _player.Rigidbody.AddForce(
-                Vector3.right * _settings.BoundaryAdjustForce * extentLeft);
+                Vector3.right * _settings.boundaryAdjustForce * extentLeft);
         }
         else if (extentRight > 0)
         {
             _player.Rigidbody.AddForce(
-                Vector3.left * _settings.BoundaryAdjustForce * extentRight);
+                Vector3.left * _settings.boundaryAdjustForce * extentRight);
         }
     }
 
@@ -99,7 +99,7 @@ public class PlayerStatePlaying : PlayerState
     public override void Update()
     {
         bool isFiring = Input.GetButton("Fire1");
-        if (isFiring && Time.realtimeSinceStartup - _lastFireTime > _settings.MaxShootInterval)
+        if (isFiring && Time.realtimeSinceStartup - _lastFireTime > _settings.maxShootInterval)
         {
             _lastFireTime = Time.realtimeSinceStartup;
             Fire();
@@ -114,7 +114,7 @@ public class PlayerStatePlaying : PlayerState
 
     public override void Start()
     {
-        _currentLives = _settings.Lives;
+        _currentLives = _settings.lives;
         _signalBus.Fire(new PlayerLivesSignal() { currentLives = _currentLives });
     }
 
@@ -125,14 +125,14 @@ public class PlayerStatePlaying : PlayerState
     [Serializable]
     public class Settings
     {
-        public int Lives;
-        public float MoveSpeed;
-        public float BoundaryBuffer;
-        public float BoundaryAdjustForce;
-        public float BulletLifetime;
-        public float BulletSpeed;
-        public float MaxShootInterval;
-        public float BulletOffsetDistance;
+        public int lives;
+        public float moveSpeed;
+        public float boundaryBuffer;
+        public float boundaryAdjustForce;
+        public float bulletLifetime;
+        public float bulletSpeed;
+        public float maxShootInterval;
+        public float bulletOffsetDistance;
     }
 
     public class Factory : PlaceholderFactory<PlayerStatePlaying>
