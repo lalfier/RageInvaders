@@ -7,21 +7,21 @@ public class PlayerStatePlaying : PlayerState
     readonly LevelBounds _levelBoundary;
     readonly Settings _settings;
     readonly Player _player;
-    readonly ProjectilePlayer.Factory _bulletFactory;
+    readonly ProjectilePlayer.Factory _projectileFactory;
     readonly SignalBus _signalBus;
 
     float _lastFireTime;
     int _currentLives;
 
     public PlayerStatePlaying(
-        Player player, ProjectilePlayer.Factory bulletFactory,
+        Player player, ProjectilePlayer.Factory projectileFactory,
         Settings settings, SignalBus signalBus,
         LevelBounds levelBoundary)
     {
         _levelBoundary = levelBoundary;
         _settings = settings;
         _player = player;
-        _bulletFactory = bulletFactory;
+        _projectileFactory = projectileFactory;
         _signalBus = signalBus;
     }
 
@@ -53,10 +53,10 @@ public class PlayerStatePlaying : PlayerState
 
     void Fire()
     {
-        var bullet = _bulletFactory.Create(
+        var projectile = _projectileFactory.Create(
             _settings.BulletSpeed, _settings.BulletLifetime, ProjectileTypes.FromPlayer);
 
-        bullet.transform.position = _player.Position + _player.LookDir * _settings.BulletOffsetDistance;
+        projectile.transform.position = _player.Position + _player.LookDir * _settings.BulletOffsetDistance;
     }
 
     void KeepPlayerOnScreen()

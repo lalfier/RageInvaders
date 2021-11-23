@@ -6,6 +6,7 @@ using Zenject;
 public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInstaller>
 {
     public PlayerSettings Player;
+    public EnemySettings Enemy;
 
     [Serializable]
     public class PlayerSettings
@@ -14,11 +15,18 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
         public PlayerStateWaiting.Settings StateStarting;
     }
 
+    [Serializable]
+    public class EnemySettings
+    {
+        public Enemy.Settings StatePlaying;
+    }
+
     public override void InstallBindings()
     {
         Container.Bind<AssetRefs>().FromInstance(FindObjectOfType<AssetManager>().assetRefs).AsSingle();
 
         Container.BindInstance(Player.StatePlaying);
         Container.BindInstance(Player.StateStarting);
+        Container.BindInstance(Enemy.StatePlaying);
     }
 }

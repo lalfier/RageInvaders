@@ -26,3 +26,9 @@ MonoBehaviour:
       StartOffset: {x: 0, y: 0, z: 0}
       Amplitude: 2
       Frequency: 2
+  Enemy:
+    StatePlaying:
+      Lives: 1
+      BulletLifetime: 1
+      BulletSpeed: 50
+      BulletOffsetDistance: 0.5
