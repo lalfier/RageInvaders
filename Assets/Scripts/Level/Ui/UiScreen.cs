@@ -16,4 +16,14 @@ public class UiScreen : MonoBehaviour
     {
         // optionally overridden
     }
+
+    public virtual void UpdateGameOverUiWaves(int waves)
+    {
+        // optionally overridden
+    }
+
+    public virtual void UpdateGameOverUiScore(int score)
+    {
+        // optionally overridden
+    }
 }

@@ -110,6 +110,8 @@ public class GameController : IInitializable, ITickable, IDisposable
         _state = GameStates.GameOverMenu;
         _enemyManager.Stop();
         _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.GameOverUi);
+        _currentUiScrren.UpdateGameOverUiWaves(_currentWave - 1);
+        _currentUiScrren.UpdateGameOverUiScore(_currentScore);
     }
 
     void OnPlayerHit(PlayerLivesSignal livesInfo)
@@ -120,9 +122,11 @@ public class GameController : IInitializable, ITickable, IDisposable
 
     void OnEnemyKilled(EnemyDeadSignal scoreInfo)
     {
-        Assert.That(_state == GameStates.Playing);
-        _currentScore += scoreInfo.typeScore;
-        _currentUiScrren.UpdatePlayingUiScore(_currentScore);
+        if(_state == GameStates.Playing)
+        {
+            _currentScore += scoreInfo.typeScore;
+            _currentUiScrren.UpdatePlayingUiScore(_currentScore);
+        }
     }
 
     void OnWaveCreated()
@@ -154,6 +158,7 @@ public class GameController : IInitializable, ITickable, IDisposable
     void UpdatePlaying()
     {
         Assert.That(_state == GameStates.Playing);
+        // Playing
     }
 
     void ShowHighScores()
