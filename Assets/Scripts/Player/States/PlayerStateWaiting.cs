@@ -9,7 +9,7 @@ public class PlayerStateWaiting : PlayerState
     readonly LevelBounds _levelBoundary;
 
     float _theta;
-    Vector3 startingPos;
+    Vector3 _startingPos;
 
     public PlayerStateWaiting(
         Player player,
@@ -25,12 +25,12 @@ public class PlayerStateWaiting : PlayerState
         float zPos = _levelBoundary.Bottom + 1;
         _player.Position = new Vector3(0, 0, -zPos);
         _player.Position += _settings.startOffset;
-        startingPos = _player.Position;
+        _startingPos = _player.Position;
     }
 
     public override void Update()
     {
-        _player.Position = startingPos + Vector3.right * _settings.amplitude * Mathf.Sin(_theta);
+        _player.Position = _startingPos + Vector3.right * _settings.amplitude * Mathf.Sin(_theta);
         _theta += Time.deltaTime * _settings.frequency;
     }
 

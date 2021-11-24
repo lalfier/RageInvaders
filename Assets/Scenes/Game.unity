@@ -1463,7 +1463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffdcdf7d4400e1d44b0412df576e909e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScreenUiList:
+  screenUiList:
   - {fileID: 774321146}
   - {fileID: 265752220}
   - {fileID: 332105627}

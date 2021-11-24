@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-public class EnemyManager : ITickable, IFixedTickable
+public class EnemyManager : ITickable
 {
     readonly Settings _settings;
     readonly Enemy.Factory _enemyFactory;
@@ -11,8 +11,11 @@ public class EnemyManager : ITickable, IFixedTickable
     readonly EnemyRegistry _enemyReg;
     readonly LevelBounds _bounds;
 
-    Transform enemiesParent;
-    bool gameStarted;
+    Transform _enemiesParent;
+    bool _gameStarted;
+    int _direction;
+    int _waveDifficulty;
+    float _lastFireTime;
 
     public EnemyManager(
         Enemy.Factory enemyFactory, SignalBus signalBus,
@@ -25,32 +28,44 @@ public class EnemyManager : ITickable, IFixedTickable
         _settings = settings;
     }
 
-    public void FixedTick()
-    {
-
-    }
-
     public void Tick()
     {
-        if(_enemyReg.EnemyCount == 0 && gameStarted)
+        if (!_gameStarted)
+        {
+            return;
+        }
+
+        if(_enemyReg.EnemyCount == 0)
         {
             GenerateWave();
+        }
+        else
+        {
+            MoveHorizontal();
+            Attack();
         }
     }
 
     public void Stop()
     {
-        gameStarted = false;
-        while(_enemyReg.EnemyCount > 0)
-        {
-            _enemyReg.Enemies[_enemyReg.EnemyCount - 1].Despawn();
-        }
+        _gameStarted = false;
     }
 
     public void Start()
     {
-        gameStarted = true;
+        _gameStarted = true;
+        _waveDifficulty = -1;
         GenerateWave();
+        _direction = 1;
+    }
+
+    public void Exit()
+    {
+        Stop();
+        while (_enemyReg.EnemyCount > 0)
+        {
+            _enemyReg.Enemies[_enemyReg.EnemyCount - 1].Despawn();
+        }
     }
 
     private void GenerateWave()
@@ -62,8 +77,8 @@ public class EnemyManager : ITickable, IFixedTickable
         }
 
         List<Enemy> randList = new List<Enemy>(_enemyReg.Enemies);
-        enemiesParent = _enemyReg.Enemies[0].transform.parent;
-        enemiesParent.position = Vector3.zero;
+        _enemiesParent = _enemyReg.Enemies[0].transform.parent;
+        _enemiesParent.position = Vector3.zero;
 
         for (int posIndex = 0; posIndex < enemyCount; posIndex++)
         {
@@ -77,7 +92,51 @@ public class EnemyManager : ITickable, IFixedTickable
             randList.RemoveAt(randIndex);
         }
 
+        _waveDifficulty++;
         _signalBus.Fire<WaveCreatedSignal>();
+    }
+
+    private void MoveHorizontal()
+    {
+        float speedPerWave = _waveDifficulty * _settings.difficultyPerWave;
+        _enemiesParent.transform.position += _direction * _enemiesParent.transform.right * (_settings.moveSpeed + speedPerWave) * Time.deltaTime;
+
+        foreach (var enemy in _enemyReg.Enemies)
+        {
+            if(_direction == 1 && ((enemy.transform.position.x + _settings.xOffset/_settings.enemyColumns) >= _bounds.Right))
+            {
+                MoveVertical();
+            }
+            if (_direction == -1 && ((enemy.transform.position.x - _settings.xOffset/_settings.enemyColumns) <= _bounds.Left))
+            {
+                MoveVertical();
+            }
+        }
+    }
+
+    private void MoveVertical()
+    {
+        _direction *= -1;
+        Vector3 pos = _enemiesParent.position;
+        pos.z += _settings.yOffset / 2;
+        _enemiesParent.position = pos;
+    }
+
+    private void Attack()
+    {
+        if (Time.realtimeSinceStartup - _lastFireTime > _settings.maxShootInterval)
+        {
+            _lastFireTime = Time.realtimeSinceStartup;
+
+            foreach (var enemy in _enemyReg.Enemies)
+            {
+                if (UnityEngine.Random.value < (1.0f/(_enemyReg.EnemyCount+0.5f)))
+                {
+                    enemy.Fire();
+                    break;
+                }
+            }
+        }
     }
 
     [Serializable]
@@ -88,5 +147,8 @@ public class EnemyManager : ITickable, IFixedTickable
         public float xOffset;
         public float yOffset;
         public float topOffset;
+        public float moveSpeed;
+        public float difficultyPerWave;
+        public float maxShootInterval;
     }
 }

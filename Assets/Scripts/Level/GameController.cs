@@ -91,7 +91,7 @@ public class GameController : IInitializable, ITickable, IDisposable
     {
         if(_state != GameStates.MainMenu)
         {
-            _enemyManager.Stop();
+            _enemyManager.Exit();
             _player.ChangeState(PlayerStates.Waiting);
             _state = GameStates.MainMenu;
         }

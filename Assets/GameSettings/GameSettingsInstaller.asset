@@ -30,7 +30,7 @@ MonoBehaviour:
     StatePlaying:
       lives: 1
       bulletLifetime: 1
-      bulletSpeed: 50
+      bulletSpeed: 25
       bulletOffsetDistance: 0.5
       scoreOnKill: 100
   EnemyManager:
@@ -40,3 +40,6 @@ MonoBehaviour:
       xOffset: 2.5
       yOffset: 2
       topOffset: 4
+      moveSpeed: 1
+      difficultyPerWave: 0.5
+      maxShootInterval: 1

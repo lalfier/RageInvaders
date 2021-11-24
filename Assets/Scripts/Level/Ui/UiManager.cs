@@ -13,7 +13,7 @@ public enum UiTypes
 public class UiManager : MonoBehaviour
 {
     [SerializeField]
-    List<UiScreen> ScreenUiList;
+    List<UiScreen> screenUiList;
 
     SignalBus _signalBus;
 
@@ -40,11 +40,11 @@ public class UiManager : MonoBehaviour
 
     public UiScreen ActivateUiPanel(UiTypes type)
     {
-        foreach (var uiPanel in ScreenUiList)
+        foreach (var uiPanel in screenUiList)
         {
             uiPanel.gameObject.SetActive(false);
         }
-        ScreenUiList[((int)type)].gameObject.SetActive(true);
-        return ScreenUiList[((int)type)];
+        screenUiList[((int)type)].gameObject.SetActive(true);
+        return screenUiList[((int)type)];
     }
 }
