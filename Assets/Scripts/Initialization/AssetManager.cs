@@ -39,6 +39,11 @@ public class AssetManager : MonoBehaviour
             assetRefs.projectileEnemyRef = handle.Result;
         };
 
+        Addressables.LoadAssetAsync<GameObject>("HighScoreRow").Completed += handle =>
+        {
+            assetRefs.highScoreRow = handle.Result;
+        };
+
         if (useDlcAssets)
         {
             Addressables.LoadAssetsAsync<GameObject>("enemies", obj => { assetRefs.enemiesRef.Add(obj); }).Completed += LoadSceneAsset;
@@ -66,4 +71,5 @@ public class AssetRefs
     public List<GameObject> enemiesRef = new List<GameObject>();
     public GameObject projectilePlayerRef;
     public GameObject projectileEnemyRef;
+    public GameObject highScoreRow;
 }

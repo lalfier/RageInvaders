@@ -54,7 +54,7 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
 
     public void Fire()
     {
-        var projectile = _projectileFactory.Create(
+        ProjectileEnemy projectile = _projectileFactory.Create(
             _settings.bulletSpeed, _settings.bulletLifetime, ProjectileTypes.FromEnemy);
 
         projectile.transform.position = Position + LookDir * _settings.bulletOffsetDistance;
@@ -74,7 +74,7 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
 
     public void OnCollisionEnter(Collision collision)
     {
-        var player = collision.gameObject.GetComponent<Player>();
+        Player player = collision.gameObject.GetComponent<Player>();
         if (player != null)
         {
             EnemyHit();

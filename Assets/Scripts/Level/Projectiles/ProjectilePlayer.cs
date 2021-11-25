@@ -5,7 +5,7 @@ public class ProjectilePlayer : Projectile
 {
     public override void OnTriggerEnter(Collider other)
     {
-        var enemy = other.GetComponent<Enemy>();
+        Enemy enemy = other.GetComponent<Enemy>();
 
         if (enemy != null && _type == ProjectileTypes.FromPlayer)
         {

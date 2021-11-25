@@ -43,3 +43,6 @@ MonoBehaviour:
       moveSpeed: 1
       difficultyPerWave: 0.5
       maxShootInterval: 1
+  ScoreManager:
+    HighscoreList:
+      numberOfScores: 10

@@ -16,11 +16,18 @@ public class UiManager : MonoBehaviour
     List<UiScreen> screenUiList;
 
     SignalBus _signalBus;
+    GameObject _rowPrefab;
 
     [Inject]
-    public void Construct(SignalBus signalBus)
+    public void Construct(SignalBus signalBus, AssetRefs assetRefs)
     {
         _signalBus = signalBus;
+        _rowPrefab = assetRefs.highScoreRow;
+    }
+
+    public GameObject GetRowPrefab()
+    {
+        return _rowPrefab;
     }
 
     public void OnStartButtonClicked()
@@ -40,7 +47,7 @@ public class UiManager : MonoBehaviour
 
     public UiScreen ActivateUiPanel(UiTypes type)
     {
-        foreach (var uiPanel in screenUiList)
+        foreach (UiScreen uiPanel in screenUiList)
         {
             uiPanel.gameObject.SetActive(false);
         }

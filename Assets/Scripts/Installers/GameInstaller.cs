@@ -48,6 +48,7 @@ public class GameInstaller : MonoInstaller
 
     void InstallLevel()
     {
+        Container.Bind<ScoreManager>().AsSingle();
         Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
         Container.Bind<LevelBounds>().AsSingle();
     }

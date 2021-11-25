@@ -32,8 +32,8 @@ public class PlayerStatePlaying : PlayerState
 
     void Move()
     {
-        var isMovigLeft = Input.GetAxisRaw("Horizontal") < 0;
-        var isMovigRight = Input.GetAxisRaw("Horizontal") > 0;
+        bool isMovigLeft = Input.GetAxisRaw("Horizontal") < 0;
+        bool isMovigRight = Input.GetAxisRaw("Horizontal") > 0;
 
         if (isMovigLeft)
         {
@@ -53,7 +53,7 @@ public class PlayerStatePlaying : PlayerState
 
     void Fire()
     {
-        var projectile = _projectileFactory.Create(
+        ProjectilePlayer projectile = _projectileFactory.Create(
             _settings.bulletSpeed, _settings.bulletLifetime, ProjectileTypes.FromPlayer);
 
         projectile.transform.position = _player.Position + _player.LookDir * _settings.bulletOffsetDistance;
@@ -61,8 +61,8 @@ public class PlayerStatePlaying : PlayerState
 
     void KeepPlayerOnScreen()
     {
-        var extentLeft = (_levelBoundary.Left + _settings.boundaryBuffer) - _player.Position.x;
-        var extentRight = _player.Position.x - (_levelBoundary.Right - _settings.boundaryBuffer);
+        float extentLeft = (_levelBoundary.Left + _settings.boundaryBuffer) - _player.Position.x;
+        float extentRight = _player.Position.x - (_levelBoundary.Right - _settings.boundaryBuffer);
 
         if (extentLeft > 0)
         {
@@ -89,7 +89,7 @@ public class PlayerStatePlaying : PlayerState
 
     public override void OnCollisionEnter(Collision collision)
     {
-        var enemy = collision.gameObject.GetComponent<Enemy>();
+        Enemy enemy = collision.gameObject.GetComponent<Enemy>();
         if(enemy != null)
         {
             PlayerHit();

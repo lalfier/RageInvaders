@@ -16,6 +16,7 @@ public class GameController : IInitializable, ITickable, IDisposable
     readonly EnemyManager _enemyManager;
     readonly Player _player;
     readonly UiManager _uiManager;
+    readonly ScoreManager _scoreManager;
 
     GameStates _state = GameStates.MainMenu;
     UiScreen _currentUiScrren;
@@ -24,12 +25,14 @@ public class GameController : IInitializable, ITickable, IDisposable
 
     public GameController(
         Player player, EnemyManager enemyManager,
-        SignalBus signalBus, UiManager uiManager)
+        SignalBus signalBus, UiManager uiManager,
+        ScoreManager scoreManager)
     {
         _signalBus = signalBus;
         _enemyManager = enemyManager;
         _player = player;
         _uiManager = uiManager;
+        _scoreManager = scoreManager;
     }
 
     public GameStates State
@@ -40,6 +43,7 @@ public class GameController : IInitializable, ITickable, IDisposable
     public void Initialize()
     {
         Physics.gravity = Vector3.zero;
+        _scoreManager.LoadScoreList();
         _signalBus.Subscribe<PlayerDeadSignal>(OnPlayerDied);
         _signalBus.Subscribe<PlayerLivesSignal>(OnPlayerHit);
         _signalBus.Subscribe<EnemyDeadSignal>(OnEnemyKilled);
@@ -112,6 +116,9 @@ public class GameController : IInitializable, ITickable, IDisposable
         _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.GameOverUi);
         _currentUiScrren.UpdateGameOverUiWaves(_currentWave - 1);
         _currentUiScrren.UpdateGameOverUiScore(_currentScore);
+
+        string date = DateTime.Now.ToString("dd/MM/yyyy");
+        _scoreManager.AddScore(new Score(date, _currentScore));
     }
 
     void OnPlayerHit(PlayerLivesSignal livesInfo)
@@ -165,5 +172,6 @@ public class GameController : IInitializable, ITickable, IDisposable
     {
         Assert.That(_state == GameStates.MainMenu);
         _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.ScoresUi);
+        _currentUiScrren.UpdateHighScoresUi(_uiManager.GetRowPrefab(), _scoreManager.GetHighScores());
     }
 }

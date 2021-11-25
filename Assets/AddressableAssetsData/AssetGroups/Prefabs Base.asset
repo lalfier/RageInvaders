@@ -38,6 +38,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - base
+  - m_GUID: b120686c6775b7c4d8e89f5b08f91236
+    m_Address: HighScoreRow
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - base
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: b04898702bcea33438c6d5c07d93a526, type: 2}
   m_SchemaSet:

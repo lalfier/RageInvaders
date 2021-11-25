@@ -101,7 +101,7 @@ public class EnemyManager : ITickable
         float speedPerWave = _waveDifficulty * _settings.difficultyPerWave;
         _enemiesParent.transform.position += _direction * _enemiesParent.transform.right * (_settings.moveSpeed + speedPerWave) * Time.deltaTime;
 
-        foreach (var enemy in _enemyReg.Enemies)
+        foreach (Enemy enemy in _enemyReg.Enemies)
         {
             if(_direction == 1 && ((enemy.transform.position.x + _settings.xOffset/_settings.enemyColumns) >= _bounds.Right))
             {
@@ -128,7 +128,7 @@ public class EnemyManager : ITickable
         {
             _lastFireTime = Time.realtimeSinceStartup;
 
-            foreach (var enemy in _enemyReg.Enemies)
+            foreach (Enemy enemy in _enemyReg.Enemies)
             {
                 if (UnityEngine.Random.value < (1.0f/(_enemyReg.EnemyCount+0.5f)))
                 {
