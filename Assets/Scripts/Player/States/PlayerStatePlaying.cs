@@ -12,6 +12,7 @@ public class PlayerStatePlaying : PlayerState
 
     float _lastFireTime;
     int _currentLives;
+    float _currentInvulnerableTime;
 
     public PlayerStatePlaying(
         Player player, ProjectilePlayer.Factory projectileFactory,
@@ -78,7 +79,13 @@ public class PlayerStatePlaying : PlayerState
 
     public override void PlayerHit()
     {
+        if(_currentInvulnerableTime > 0)
+        {
+            return;
+        }
+
         _currentLives--;
+        _currentInvulnerableTime = _settings.invulnerableTime;
         _signalBus.Fire(new PlayerLivesSignal() { currentLives = _currentLives });
 
         if (_currentLives == 0)
@@ -105,16 +112,16 @@ public class PlayerStatePlaying : PlayerState
             Fire();
         }
 
-        // Cheat
-        if (Input.GetKeyDown(KeyCode.X))
+        if (_currentInvulnerableTime > 0)
         {
-            PlayerHit();
+            _currentInvulnerableTime -= Time.deltaTime;
         }
     }
 
     public override void Start()
     {
         _currentLives = _settings.lives;
+        _currentInvulnerableTime = 0;
         _signalBus.Fire(new PlayerLivesSignal() { currentLives = _currentLives });
     }
 
@@ -126,6 +133,7 @@ public class PlayerStatePlaying : PlayerState
     public class Settings
     {
         public int lives;
+        public float invulnerableTime;
         public float moveSpeed;
         public float boundaryBuffer;
         public float boundaryAdjustForce;

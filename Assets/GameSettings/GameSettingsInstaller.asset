@@ -15,6 +15,7 @@ MonoBehaviour:
   Player:
     StatePlaying:
       lives: 3
+      invulnerableTime: 2
       moveSpeed: 100
       boundaryBuffer: 1
       boundaryAdjustForce: 500

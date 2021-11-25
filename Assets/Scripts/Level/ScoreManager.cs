@@ -36,7 +36,6 @@ public class ScoreManager
     private void SaveScoreList()
     {
         String json = JsonUtility.ToJson(scoreData);
-        Debug.Log(json);
         PlayerPrefs.SetString("scoreList", json);
     }
 
