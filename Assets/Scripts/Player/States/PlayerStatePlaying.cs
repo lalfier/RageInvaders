@@ -33,8 +33,8 @@ public class PlayerStatePlaying : PlayerState
 
     void Move()
     {
-        bool isMovigLeft = Input.GetAxisRaw("Horizontal") < 0;
-        bool isMovigRight = Input.GetAxisRaw("Horizontal") > 0;
+        bool isMovigLeft = SimpleInput.GetAxisRaw("Horizontal") < 0;
+        bool isMovigRight = SimpleInput.GetAxisRaw("Horizontal") > 0;
 
         if (isMovigLeft)
         {
@@ -105,7 +105,7 @@ public class PlayerStatePlaying : PlayerState
 
     public override void Update()
     {
-        bool isFiring = Input.GetButton("Fire1");
+        bool isFiring = SimpleInput.GetButton("Fire1");
         if (isFiring && Time.realtimeSinceStartup - _lastFireTime > _settings.maxShootInterval)
         {
             _lastFireTime = Time.realtimeSinceStartup;
