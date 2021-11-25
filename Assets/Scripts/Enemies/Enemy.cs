@@ -54,6 +54,7 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
 
     public void Fire()
     {
+        // Create bullets from factory with speed and lifetime
         ProjectileEnemy projectile = _projectileFactory.Create(
             _settings.bulletSpeed, _settings.bulletLifetime, ProjectileTypes.FromEnemy);
 
@@ -66,6 +67,7 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
 
         if (_currentLives == 0)
         {
+            // Send enemy dead signal with score and remove enemy from screen
             int score = (int)_type * _settings.scoreOnKill + _settings.scoreOnKill;
             _signalBus.Fire(new EnemyDeadSignal() { typeScore = score });
             Despawn();
@@ -88,6 +90,7 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
 
     public void OnDespawned()
     {
+        // Remove enemy from registry on killed
         _registry.RemoveEnemy(this);
         _pool = null;
     }
@@ -96,6 +99,7 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
     {
         _pool = pool;
         _currentLives = _settings.lives;
+        // Add enemy to registry on created
         _registry.AddEnemy(this);
     }
 
@@ -109,6 +113,7 @@ public class Enemy : MonoBehaviour, IPoolable<IMemoryPool>
         public int scoreOnKill;
     }
 
+    // Factory
     public class Factory : PlaceholderFactory<Enemy>
     {
     }

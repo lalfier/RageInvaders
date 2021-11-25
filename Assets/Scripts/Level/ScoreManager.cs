@@ -22,6 +22,7 @@ public class ScoreManager
 
     public void AddScore(Score score)
     {
+        // Add score to list, arrange list, trim list if more than X entries, save list.
         scoreData.scores.Add(score);
         scoreData.scores = scoreData.scores.OrderByDescending(x => x._score).ToList();
 
@@ -35,6 +36,7 @@ public class ScoreManager
 
     private void SaveScoreList()
     {
+        // List to json string and save under player prefs
         String json = JsonUtility.ToJson(scoreData);
         PlayerPrefs.SetString("scoreList", json);
     }
@@ -46,6 +48,7 @@ public class ScoreManager
             SaveScoreList();
         }
 
+        // Load player prefs to json string and populate list
         String json = PlayerPrefs.GetString("scoreList", "{}");
         scoreData = JsonUtility.FromJson<ScoreData>(json);
     }
@@ -57,6 +60,9 @@ public class ScoreManager
     }
 }
 
+/// <summary>
+/// List of scores to save/load.
+/// </summary>
 [Serializable]
 public class ScoreData
 {

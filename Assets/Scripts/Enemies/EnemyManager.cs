@@ -62,14 +62,17 @@ public class EnemyManager : ITickable
     public void Exit()
     {
         Stop();
+
+        // Clear all remaining enemies from scene
         while (_enemyReg.EnemyCount > 0)
         {
             _enemyReg.Enemies[_enemyReg.EnemyCount - 1].Despawn();
         }
     }
 
-    private void GenerateWave()
+    void GenerateWave()
     {
+        // Create enemies from factory
         int enemyCount = _settings.enemyColumns * _settings.enemyRows;
         for (int i = 0; i < enemyCount; i++)
         {
@@ -80,6 +83,7 @@ public class EnemyManager : ITickable
         _enemiesParent = _enemyReg.Enemies[0].transform.parent;
         _enemiesParent.position = Vector3.zero;
 
+        // Randomize enemy positions in grid
         for (int posIndex = 0; posIndex < enemyCount; posIndex++)
         {
             float XOffset = (posIndex / _settings.enemyRows) * _settings.xOffset;   // Divide by rows
@@ -92,15 +96,18 @@ public class EnemyManager : ITickable
             randList.RemoveAt(randIndex);
         }
 
+        // Crank up difficulty and fire wave created signal
         _waveDifficulty++;
         _signalBus.Fire<WaveCreatedSignal>();
     }
 
-    private void MoveHorizontal()
+    void MoveHorizontal()
     {
+        // Enemies move faster with each wave
         float speedPerWave = _waveDifficulty * _settings.difficultyPerWave;
         _enemiesParent.transform.position += _direction * _enemiesParent.transform.right * (_settings.moveSpeed + speedPerWave) * Time.deltaTime;
 
+        // If any enemy touches screen bounds, change direction and go down
         foreach (Enemy enemy in _enemyReg.Enemies)
         {
             if(_direction == 1 && ((enemy.transform.position.x + _settings.xOffset/_settings.enemyColumns) >= _bounds.Right))
@@ -114,7 +121,7 @@ public class EnemyManager : ITickable
         }
     }
 
-    private void MoveVertical()
+    void MoveVertical()
     {
         _direction *= -1;
         Vector3 pos = _enemiesParent.position;
@@ -122,8 +129,9 @@ public class EnemyManager : ITickable
         _enemiesParent.position = pos;
     }
 
-    private void Attack()
+    void Attack()
     {
+        // Enemies fire more often as their number on screen is lower
         if (Time.realtimeSinceStartup - _lastFireTime > _settings.maxShootInterval)
         {
             _lastFireTime = Time.realtimeSinceStartup;

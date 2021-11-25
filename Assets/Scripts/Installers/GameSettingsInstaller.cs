@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using Zenject;
 
+/// <summary>
+/// Bind all settings from SO config file and loaded assets from Asset manager instance.
+/// </summary>
 [CreateAssetMenu(menuName = "RageInvaders/Game Settings")]
 public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInstaller>
 {

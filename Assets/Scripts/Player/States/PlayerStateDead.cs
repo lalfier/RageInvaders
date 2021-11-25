@@ -15,6 +15,7 @@ public class PlayerStateDead : PlayerState
 
     public override void Start()
     {
+        // Disable player mesh and fire a dead signal
         _player.MeshRenderer.enabled = false;
         _signalBus.Fire<PlayerDeadSignal>();
     }
@@ -32,6 +33,7 @@ public class PlayerStateDead : PlayerState
     {
     }
 
+    // Factory for dead state
     public class Factory : PlaceholderFactory<PlayerStateDead>
     {
     }

@@ -22,6 +22,7 @@ public class PlayerStateWaiting : PlayerState
 
     public override void Start()
     {
+        // Position player from bottom level bound
         float zPos = _levelBoundary.Bottom + 1;
         _player.Position = new Vector3(0, 0, -zPos);
         _player.Position += _settings.startOffset;
@@ -30,6 +31,7 @@ public class PlayerStateWaiting : PlayerState
 
     public override void Update()
     {
+        // Move player left and right while waiting
         _player.Position = _startingPos + Vector3.right * _settings.amplitude * Mathf.Sin(_theta);
         _theta += Time.deltaTime * _settings.frequency;
     }
@@ -46,6 +48,7 @@ public class PlayerStateWaiting : PlayerState
         public float frequency;
     }
 
+    // Factory for wait state
     public class Factory : PlaceholderFactory<PlayerStateWaiting>
     {
     }

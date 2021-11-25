@@ -47,6 +47,7 @@ public class UiManager : MonoBehaviour
 
     public UiScreen ActivateUiPanel(UiTypes type)
     {
+        // Set active and return Ui screen (disable all others)
         foreach (UiScreen uiPanel in screenUiList)
         {
             uiPanel.gameObject.SetActive(false);

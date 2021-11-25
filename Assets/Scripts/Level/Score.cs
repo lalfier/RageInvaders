@@ -1,5 +1,8 @@
 using System;
 
+/// <summary>
+/// Data for single score entry.
+/// </summary>
 [Serializable]
 public class Score
 {

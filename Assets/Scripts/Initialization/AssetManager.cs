@@ -5,22 +5,25 @@ using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
+/// <summary>
+/// Loads assets from addressables on game start (Init scene).
+/// </summary>
 public class AssetManager : MonoBehaviour
 {
     public bool useDlcAssets = true;
     public AssetRefs assetRefs;
 
-    private void Awake()
+    void Awake()
     {
         DontDestroyOnLoad(this);
     }
 
-    private void Start()
+    void Start()
     {
         StartLoadingAssets();
     }
 
-    private void StartLoadingAssets()
+    void StartLoadingAssets()
     {
         assetRefs = new AssetRefs();
 
@@ -50,16 +53,17 @@ public class AssetManager : MonoBehaviour
         }
         else
         {
+            // Load only enemies with both tags
             Addressables.LoadAssetsAsync<GameObject>(new List<string>(){ "base", "enemies" }, obj => { assetRefs.enemiesRef.Add(obj); }, Addressables.MergeMode.Intersection).Completed += LoadSceneAsset;
         }        
     }
 
-    private void LoadSceneAsset(AsyncOperationHandle<IList<GameObject>> obj)
+    void LoadSceneAsset(AsyncOperationHandle<IList<GameObject>> obj)
     {
         Addressables.LoadSceneAsync("Game", LoadSceneMode.Additive, true).Completed += FinishLoadingAssets;
     }
 
-    private void FinishLoadingAssets(AsyncOperationHandle<SceneInstance> obj)
+    void FinishLoadingAssets(AsyncOperationHandle<SceneInstance> obj)
     {
         SceneManager.UnloadSceneAsync(0);   //Initialization is the only scene in BuildSettings
     }

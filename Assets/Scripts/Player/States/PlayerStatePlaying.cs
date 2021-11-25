@@ -33,6 +33,7 @@ public class PlayerStatePlaying : PlayerState
 
     void Move()
     {
+        // Move player with input
         bool isMovigLeft = SimpleInput.GetAxisRaw("Horizontal") < 0;
         bool isMovigRight = SimpleInput.GetAxisRaw("Horizontal") > 0;
 
@@ -54,6 +55,7 @@ public class PlayerStatePlaying : PlayerState
 
     void Fire()
     {
+        // Create bullets from factory with speed and lifetime
         ProjectilePlayer projectile = _projectileFactory.Create(
             _settings.bulletSpeed, _settings.bulletLifetime, ProjectileTypes.FromPlayer);
 
@@ -62,6 +64,7 @@ public class PlayerStatePlaying : PlayerState
 
     void KeepPlayerOnScreen()
     {
+        // Keep player inside level bounds
         float extentLeft = (_levelBoundary.Left + _settings.boundaryBuffer) - _player.Position.x;
         float extentRight = _player.Position.x - (_levelBoundary.Right - _settings.boundaryBuffer);
 
@@ -79,17 +82,20 @@ public class PlayerStatePlaying : PlayerState
 
     public override void PlayerHit()
     {
-        if(_currentInvulnerableTime > 0)
+        // Player can not be damaged while invulnerable
+        if (_currentInvulnerableTime > 0)
         {
             return;
         }
 
+        // Fire hit signal with remaining lives
         _currentLives--;
         _currentInvulnerableTime = _settings.invulnerableTime;
         _signalBus.Fire(new PlayerLivesSignal() { currentLives = _currentLives });
 
         if (_currentLives == 0)
         {
+            // If dead change state
             _player.ChangeState(PlayerStates.Dead);
         }
     }
@@ -105,6 +111,7 @@ public class PlayerStatePlaying : PlayerState
 
     public override void Update()
     {
+        // Fire with input every x seconds
         bool isFiring = SimpleInput.GetButton("Fire1");
         if (isFiring && Time.realtimeSinceStartup - _lastFireTime > _settings.maxShootInterval)
         {
@@ -125,10 +132,6 @@ public class PlayerStatePlaying : PlayerState
         _signalBus.Fire(new PlayerLivesSignal() { currentLives = _currentLives });
     }
 
-    public override void Dispose()
-    {
-    }
-
     [Serializable]
     public class Settings
     {
@@ -143,6 +146,7 @@ public class PlayerStatePlaying : PlayerState
         public float bulletOffsetDistance;
     }
 
+    // Factory for play state
     public class Factory : PlaceholderFactory<PlayerStatePlaying>
     {
     }

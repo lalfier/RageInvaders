@@ -1,6 +1,9 @@
 using UnityEngine;
 using Zenject;
 
+/// <summary>
+/// Get level bounds from camera view.
+/// </summary>
 public class LevelBounds
 {
     readonly Camera _camera;

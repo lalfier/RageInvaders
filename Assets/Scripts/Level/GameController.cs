@@ -95,10 +95,12 @@ public class GameController : IInitializable, ITickable, IDisposable
     {
         if(_state != GameStates.MainMenu)
         {
+            // If we came from other state
             _enemyManager.Exit();
             _player.ChangeState(PlayerStates.Waiting);
             _state = GameStates.MainMenu;
         }
+        // Set main menu as active
         _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.MainMenuUi);
     }
 
@@ -110,6 +112,7 @@ public class GameController : IInitializable, ITickable, IDisposable
 
     void OnPlayerDied()
     {
+        // Set game over menu and populate text fields
         Assert.That(_state == GameStates.Playing);
         _state = GameStates.GameOverMenu;
         _enemyManager.Stop();
@@ -117,30 +120,9 @@ public class GameController : IInitializable, ITickable, IDisposable
         _currentUiScrren.UpdateGameOverUiWaves(_currentWave - 1);
         _currentUiScrren.UpdateGameOverUiScore(_currentScore);
 
+        // Add score to score manager
         string date = DateTime.Now.ToString("dd/MM/yyyy");
         _scoreManager.AddScore(new Score(date, _currentScore));
-    }
-
-    void OnPlayerHit(PlayerLivesSignal livesInfo)
-    {
-        Assert.That(_state == GameStates.Playing);
-        _currentUiScrren.UpdatePlayingUiLives(livesInfo.currentLives);
-    }
-
-    void OnEnemyKilled(EnemyDeadSignal scoreInfo)
-    {
-        if(_state == GameStates.Playing)
-        {
-            _currentScore += scoreInfo.typeScore;
-            _currentUiScrren.UpdatePlayingUiScore(_currentScore);
-        }
-    }
-
-    void OnWaveCreated()
-    {
-        Assert.That(_state == GameStates.Playing);
-        _currentWave++;
-        _currentUiScrren.UpdatePlayingUiWaves(_currentWave);
     }
 
     void UpdateGameOver()
@@ -151,8 +133,8 @@ public class GameController : IInitializable, ITickable, IDisposable
 
     void StartGame()
     {
+        // Reset game, set playing ui and start enemy waves
         Assert.That(_state == GameStates.MainMenu);
-
         _currentWave = 0;
         _currentScore = 0;
         _state = GameStates.Playing;
@@ -170,8 +152,34 @@ public class GameController : IInitializable, ITickable, IDisposable
 
     void ShowHighScores()
     {
+        // Populate high score screen with best scores
         Assert.That(_state == GameStates.MainMenu);
         _currentUiScrren = _uiManager.ActivateUiPanel(UiTypes.ScoresUi);
         _currentUiScrren.UpdateHighScoresUi(_uiManager.GetRowPrefab(), _scoreManager.GetHighScores());
+    }
+
+    void OnPlayerHit(PlayerLivesSignal livesInfo)
+    {
+        // Update lives on playing ui
+        Assert.That(_state == GameStates.Playing);
+        _currentUiScrren.UpdatePlayingUiLives(livesInfo.currentLives);
+    }
+
+    void OnEnemyKilled(EnemyDeadSignal scoreInfo)
+    {
+        // Update score on playing ui
+        if (_state == GameStates.Playing)
+        {
+            _currentScore += scoreInfo.typeScore;
+            _currentUiScrren.UpdatePlayingUiScore(_currentScore);
+        }
+    }
+
+    void OnWaveCreated()
+    {
+        // Update wave on playing ui
+        Assert.That(_state == GameStates.Playing);
+        _currentWave++;
+        _currentUiScrren.UpdatePlayingUiWaves(_currentWave);
     }
 }

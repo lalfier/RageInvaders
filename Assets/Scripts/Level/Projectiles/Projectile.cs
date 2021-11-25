@@ -32,6 +32,7 @@ public abstract class Projectile : MonoBehaviour, IPoolable<float, float, Projec
     {
         transform.position -= _direction * _speed * Time.deltaTime;
 
+        // Remove after some time
         if (Time.realtimeSinceStartup - _startTime > _lifeTime)
         {
             _pool.Despawn(this);

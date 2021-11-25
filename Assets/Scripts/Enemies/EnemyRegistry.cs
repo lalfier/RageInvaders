@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 
+/// <summary>
+/// Keep track of live enemies on screen.
+/// </summary>
 public class EnemyRegistry
 {
     readonly List<Enemy> _enemies = new List<Enemy>();
